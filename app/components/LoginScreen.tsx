@@ -72,7 +72,7 @@ const LoginScreen: React.FC = () => {
         <div>
           <div className="flex items-center gap-3">
             <LogoIcon className="w-10 h-10 text-white" />
-            <h1 className="text-3xl font-bold">Seeker</h1>
+            <h1 className="text-3xl font-bold text-white">Seeker</h1>
           </div>
           <p className="mt-4 text-lg text-indigo-200 max-w-lg">
             Your autonomous AI partner for deep, cited, and transparent research.
@@ -80,7 +80,7 @@ const LoginScreen: React.FC = () => {
         </div>
         
         <div className="space-y-6">
-            <h2 className="text-2xl font-semibold">Unlock Deeper Insights. Faster.</h2>
+            <h2 className="text-2xl font-semibold text-white">Unlock Deeper Insights. Faster.</h2>
             <ul className="space-y-4 text-lg">
                 <Feature>Harness AI-driven multi-step research planning and execution.</Feature>
                 <Feature>Receive answers with clear citations and provenance from verifiable sources.</Feature>
