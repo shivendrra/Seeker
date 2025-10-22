@@ -1,0 +1,5 @@
+{
+  "name": "Seeker: AI Agent based Research Application",
+  "description": "An autonomous AI Agent to assist journalists, lawyers, and academic researchers with complex research tasks, providing structured answers with clear citations and provenance.",
+  "requestFramePermissions": []
+}
