@@ -1,7 +1,8 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { User, ChatSession } from '../types';
 import { logout } from '../services/firebaseService';
-import { LogoIcon, DocumentIcon, SettingsIcon, UserCircleIcon } from './icons';
+import { LogoIcon, DocumentIcon, SettingsIcon, UserCircleIcon, LogoutIcon, DeleteIcon } from './icons';
+import ConfirmationDialog from './ConfirmationDialog';
 
 interface LeftSidebarProps {
   user: User;
@@ -9,69 +10,124 @@ interface LeftSidebarProps {
   activeSessionId: string | null;
   onNewSession: () => void;
   onSelectSession: (sessionId: string) => void;
+  onOpenSettings: () => void;
+  onDeleteSession: (sessionId: string) => void;
 }
 
-const LeftSidebar: React.FC<LeftSidebarProps> = ({ user, sessions, activeSessionId, onNewSession, onSelectSession }) => {
+const LeftSidebar: React.FC<LeftSidebarProps> = ({ user, sessions, activeSessionId, onNewSession, onSelectSession, onOpenSettings, onDeleteSession }) => {
+  const [sessionToDelete, setSessionToDelete] = useState<ChatSession | null>(null);
+  
+  const handleDeleteClick = (session: ChatSession, e: React.MouseEvent) => {
+    e.stopPropagation(); // Prevent session selection when clicking delete
+    setSessionToDelete(session);
+  };
+  
+  const confirmDelete = () => {
+    if (sessionToDelete) {
+      onDeleteSession(sessionToDelete.id);
+      setSessionToDelete(null);
+    }
+  };
+
   return (
-    <div className="w-72 bg-gray-50 border-r border-gray-200 flex flex-col">
-      <div className="p-4 border-b border-gray-200 flex items-center gap-3">
-        <LogoIcon className="w-8 h-8 text-indigo-600" />
-        <h1 className="text-xl font-bold text-gray-800">Seeker</h1>
-      </div>
-
-      <div className="p-2">
-        <button
-          onClick={onNewSession}
-          className="w-full flex items-center gap-3 p-2 rounded-md text-gray-700 hover:bg-indigo-100 font-semibold"
-        >
-          <DocumentIcon className="w-5 h-5" />
-          <span>New Research</span>
-        </button>
-      </div>
-      
-      <nav className="flex-1 overflow-y-auto px-2 py-2 space-y-1">
-        {sessions.map((session) => (
-          <a
-            key={session.id}
-            href="#"
-            onClick={(e) => {
-              e.preventDefault();
-              onSelectSession(session.id);
-            }}
-            className={`flex items-center gap-3 p-2 rounded-md text-sm truncate ${
-              activeSessionId === session.id
-                ? 'bg-indigo-100 text-indigo-700 font-semibold'
-                : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900'
-            }`}
-          >
-             <span className="flex-shrink-0 w-5 h-5 text-gray-400">
-                <DocumentIcon className="w-5 h-5" />
-            </span>
-            <span className="truncate">{session.title}</span>
-          </a>
-        ))}
-      </nav>
-
-      <div className="p-4 border-t border-gray-200">
-        <div className="flex items-center gap-3 mb-4">
-          {user.photoURL ? (
-            <img src={user.photoURL} alt="User" className="w-9 h-9 rounded-full" />
-          ) : (
-            <UserCircleIcon className="w-9 h-9 text-gray-500" />
-          )}
-          <span className="font-medium text-gray-800 truncate">
-            {user.displayName || user.email}
-          </span>
+    <>
+      <div className="w-72 bg-gray-50 dark:bg-zinc-900 border-r border-gray-200 dark:border-zinc-800 flex flex-col">
+        <div className="p-4 border-b border-gray-200 dark:border-zinc-800 flex items-center gap-3">
+          <LogoIcon className="w-8 h-8 text-indigo-600 dark:text-indigo-400" />
+          <h1 className="text-xl font-bold text-gray-800 dark:text-zinc-100">Seeker</h1>
         </div>
-        <button
-          onClick={() => logout()}
-          className="w-full flex items-center gap-3 p-2 rounded-md text-gray-700 hover:bg-gray-200"
-        >
-          <SettingsIcon className="w-5 h-5" />
-          <span>Logout</span>
-        </button>
+
+        <div className="p-2">
+          <button
+            onClick={onNewSession}
+            className="w-full flex items-center gap-3 p-3 rounded-lg text-gray-700 dark:text-zinc-200 hover:bg-indigo-100 dark:hover:bg-indigo-900/50 font-semibold transition-colors"
+          >
+            <DocumentIcon className="w-5 h-5" />
+            <span>New Research</span>
+          </button>
+        </div>
+        
+        <nav className="flex-1 overflow-y-auto px-2 py-2 space-y-1">
+          {sessions.length > 0 ? (
+            sessions.map((session) => (
+              <a
+                key={session.id}
+                href="#"
+                onClick={(e) => {
+                  e.preventDefault();
+                  onSelectSession(session.id);
+                }}
+                className={`group flex items-center justify-between p-3 rounded-lg text-sm truncate transition-colors ${
+                  activeSessionId === session.id
+                    ? 'bg-indigo-100 text-indigo-700 dark:bg-indigo-500/20 dark:text-indigo-300 font-semibold'
+                    : 'text-gray-600 dark:text-zinc-400 hover:bg-gray-100 dark:hover:bg-zinc-800 hover:text-gray-900 dark:hover:text-zinc-100'
+                }`}
+              >
+                <div className="flex items-center gap-3 truncate">
+                  <DocumentIcon className="w-5 h-5 text-gray-400 dark:text-zinc-500" />
+                  <span className="truncate">{session.title}</span>
+                </div>
+                <button
+                  onClick={(e) => handleDeleteClick(session, e)}
+                  className="opacity-0 group-hover:opacity-100 text-gray-500 hover:text-red-600 hover:bg-red-100 dark:hover:bg-red-900/50 focus:opacity-100 flex-shrink-0 p-1 rounded-md transition-all duration-150 ease-in-out transform hover:scale-110 flex items-center justify-center"
+                  aria-label={`Delete session ${session.title}`}
+                >
+                  <DeleteIcon className="w-4 h-4" />
+                </button>
+              </a>
+            ))
+          ) : (
+            <div className="px-3 py-4 text-center text-sm text-gray-500 dark:text-zinc-400">
+                No research sessions yet. Start a new one to begin!
+            </div>
+          )}
+        </nav>
+
+        <div className="p-4 border-t border-gray-200 dark:border-zinc-800">
+          <div className="flex items-center gap-3 mb-4 p-2">
+            {user.photoURL ? (
+              <img src={user.photoURL} alt="User" className="w-9 h-9 rounded-full" />
+            ) : (
+              <UserCircleIcon className="w-9 h-9 text-gray-500 dark:text-zinc-400" />
+            )}
+            <span className="font-medium text-gray-800 dark:text-zinc-200 truncate">
+              {user.displayName || user.email}
+            </span>
+          </div>
+
+          <button
+            onClick={onOpenSettings}
+            className="w-full flex items-center gap-3 p-3 rounded-lg text-gray-700 dark:text-zinc-300 hover:bg-gray-200 dark:hover:bg-zinc-800 mb-2 transition-colors"
+          >
+            <SettingsIcon className="w-5 h-5" />
+            <span>Settings</span>
+          </button>
+          
+          <button
+            onClick={() => logout()}
+            className="w-full flex items-center gap-3 p-3 rounded-lg text-gray-700 dark:text-zinc-300 hover:bg-gray-200 dark:hover:bg-zinc-800 transition-colors"
+          >
+            <LogoutIcon className="w-5 h-5" />
+            <span>Logout</span>
+          </button>
+        </div>
       </div>
-    </div>
+      {sessionToDelete && (
+        <ConfirmationDialog
+          isOpen={!!sessionToDelete}
+          onClose={() => setSessionToDelete(null)}
+          onConfirm={confirmDelete}
+          title="Delete Research Session"
+          message={
+            <>
+              Are you sure you want to permanently delete the session:
+              <strong className="font-semibold text-gray-800 dark:text-zinc-100 block mt-2">{sessionToDelete.title}</strong>
+              This action cannot be undone.
+            </>
+          }
+        />
+      )}
+    </>
   );
 };
 

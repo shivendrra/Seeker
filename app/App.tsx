@@ -5,24 +5,47 @@ import LeftSidebar from './components/LeftSidebar';
 import ResponseDisplay from './components/ResponseDisplay';
 import QueryInput from './components/QueryInput';
 import ProfileSetupScreen from './components/ProfileSetupScreen';
-import { Message, ChatSession } from './types';
+import SettingsScreen from './components/SettingsScreen';
+import TraceView from './components/TraceView';
+import { Message, ChatSession, Trace, Source } from './types';
 import {
   getUserSessions,
   createSession,
   getSessionMessages,
   addMessageToSession,
   updateMessageInSession,
-  updateSessionTitle
+  updateSessionTitle,
+  finalizeBotMessageInSession,
+  deleteSession,
 } from './services/firebaseService';
 import { runResearchAgentStream } from './services/geminiService';
+import { extractTraceAndContent } from './utils/parsing';
 
 function App() {
-  const { user, loading, isProfileIncomplete } = useAuth();
+  const { user, userProfile, loading, isProfileIncomplete } = useAuth();
   const [sessions, setSessions] = useState<ChatSession[]>([]);
   const [activeSessionId, setActiveSessionId] = useState<string | null>(null);
   const [messages, setMessages] = useState<Message[]>([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+  const [activeTrace, setActiveTrace] = useState<Trace | null>(null);
+  const [activeSources, setActiveSources] = useState<Source[] | null>(null);
+  const [theme, setTheme] = useState<'light' | 'dark'>('light');
   const messagesEndRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (userProfile?.settings?.theme) {
+      setTheme(userProfile.settings.theme);
+    }
+  }, [userProfile]);
+
+  useEffect(() => {
+    if (theme === 'dark') {
+      document.documentElement.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+    }
+  }, [theme]);
 
   useEffect(() => {
     if (user) {
@@ -39,6 +62,18 @@ function App() {
       setMessages([]);
     }
   }, [activeSessionId]);
+  
+  useEffect(() => {
+    // When messages update, find the last bot message to display its trace/sources
+    const lastBotMessage = [...messages].reverse().find(m => m.sender === 'bot');
+    if (lastBotMessage) {
+        setActiveTrace(lastBotMessage.trace || null);
+        setActiveSources(lastBotMessage.sources || null);
+    } else {
+        setActiveTrace(null);
+        setActiveSources(null);
+    }
+  }, [messages]);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -53,11 +88,17 @@ function App() {
     }
   };
 
+  const handleDeleteSession = async (sessionId: string) => {
+    if (activeSessionId === sessionId) {
+      setActiveSessionId(null);
+    }
+    await deleteSession(sessionId);
+  };
+
   const handleSend = async (query: string) => {
     if (!activeSessionId || !user) return;
 
     const isNewSession = messages.length === 0;
-
     setIsLoading(true);
 
     const userMessage: Omit<Message, 'id' | 'timestamp'> = {
@@ -66,13 +107,12 @@ function App() {
     };
     await addMessageToSession(activeSessionId, userMessage);
 
-    // If it's the first message, update the session title
     if (isNewSession) {
         const newTitle = query.length > 30 ? query.substring(0, 27) + '...' : query;
         await updateSessionTitle(activeSessionId, newTitle);
     }
 
-    const botMessage: Omit<Message, 'id' | 'timestamp'> = {
+    const botMessage: Omit<Message, 'id' | 'timestamp' | 'trace'> = {
       text: '',
       sender: 'bot',
     };
@@ -85,10 +125,14 @@ function App() {
         const chunkText = chunk.text;
         if (chunkText) {
           responseText += chunkText;
-          // Update the message in Firestore, which will trigger the onSnapshot listener
           await updateMessageInSession(activeSessionId, botMessageRef.id, responseText);
         }
       }
+
+      // After stream is complete, parse for trace and update final message
+      const { content, trace, sources } = extractTraceAndContent(responseText);
+      await finalizeBotMessageInSession(activeSessionId, botMessageRef.id, content, trace, sources);
+
     } catch (error) {
       console.error('Error streaming response:', error);
       await updateMessageInSession(activeSessionId, botMessageRef.id, 'Sorry, I encountered an error.');
@@ -99,8 +143,8 @@ function App() {
   
   if (loading) {
     return (
-      <div className="flex items-center justify-center min-h-screen bg-gray-50">
-        <div className="w-16 h-16 border-4 border-t-indigo-600 border-gray-200 rounded-full animate-spin"></div>
+      <div className="flex items-center justify-center min-h-screen bg-gray-50 dark:bg-zinc-900">
+        <div className="w-16 h-16 border-4 border-t-indigo-600 border-gray-200 dark:border-zinc-600 rounded-full animate-spin"></div>
       </div>
     );
   }
@@ -109,27 +153,41 @@ function App() {
     return <LoginScreen />;
   }
   
-  if (isProfileIncomplete) {
+  if (isProfileIncomplete || !userProfile) {
     return <ProfileSetupScreen user={user} />;
   }
 
   return (
-    <div className="flex h-screen bg-white text-gray-900">
-      <LeftSidebar
-        user={user}
-        sessions={sessions}
-        activeSessionId={activeSessionId}
-        onNewSession={handleNewSession}
-        onSelectSession={setActiveSessionId}
-      />
-      <div className="flex-1 flex flex-col">
-        <main className="flex-1 flex flex-col overflow-hidden">
-          <ResponseDisplay messages={messages} />
-          <div ref={messagesEndRef} />
-        </main>
-        <QueryInput onSend={handleSend} isLoading={isLoading} disabled={!activeSessionId} />
+    <>
+      <div className="flex h-screen bg-white dark:bg-zinc-950 text-gray-900 dark:text-zinc-100">
+        <LeftSidebar
+          user={user}
+          sessions={sessions}
+          activeSessionId={activeSessionId}
+          onNewSession={handleNewSession}
+          onSelectSession={setActiveSessionId}
+          onOpenSettings={() => setIsSettingsOpen(true)}
+          onDeleteSession={handleDeleteSession}
+        />
+        <div className="flex-1 flex flex-col min-w-0">
+          <main className="flex-1 flex flex-col overflow-hidden">
+            <ResponseDisplay messages={messages} />
+            <div ref={messagesEndRef} />
+          </main>
+          <QueryInput onSend={handleSend} isLoading={isLoading} activeSessionId={activeSessionId} />
+        </div>
+        {(userProfile?.settings?.showTrace !== false) && <TraceView trace={activeTrace} sources={activeSources} />}
       </div>
-    </div>
+      {isSettingsOpen && (
+        <SettingsScreen 
+          user={user}
+          userProfile={userProfile}
+          onClose={() => setIsSettingsOpen(false)}
+          theme={theme}
+          setTheme={setTheme}
+        />
+      )}
+    </>
   );
 }
 

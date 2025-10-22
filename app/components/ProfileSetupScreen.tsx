@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { User, UserProfileData } from '../types';
 import { createUserProfile } from '../services/firebaseService';
@@ -67,7 +68,7 @@ const ProfileSetupScreen: React.FC<ProfileSetupScreenProps> = ({ user }) => {
                   required
                   value={displayName}
                   onChange={(e) => setDisplayName(e.target.value)}
-                  className="block w-full appearance-none rounded-lg border border-gray-200 px-3 py-2 placeholder-gray-400 shadow-sm focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm transition-colors"
+                  className="block w-full appearance-none rounded-lg border border-gray-200 px-3 py-2 text-gray-900 placeholder-gray-400 shadow-sm focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm transition-colors"
                 />
               </div>
             </div>
@@ -84,7 +85,7 @@ const ProfileSetupScreen: React.FC<ProfileSetupScreenProps> = ({ user }) => {
                   autoComplete="organization-title"
                   value={profession}
                   onChange={(e) => setProfession(e.target.value)}
-                  className="block w-full appearance-none rounded-lg border border-gray-200 px-3 py-2 placeholder-gray-400 shadow-sm focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm transition-colors"
+                  className="block w-full appearance-none rounded-lg border border-gray-200 px-3 py-2 text-gray-900 placeholder-gray-400 shadow-sm focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm transition-colors"
                 />
               </div>
             </div>
@@ -101,7 +102,7 @@ const ProfileSetupScreen: React.FC<ProfileSetupScreenProps> = ({ user }) => {
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}
                   placeholder="A short bio..."
-                  className="block w-full appearance-none rounded-lg border border-gray-200 px-3 py-2 placeholder-gray-400 shadow-sm focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm transition-colors"
+                  className="block w-full appearance-none rounded-lg border border-gray-200 px-3 py-2 text-gray-900 placeholder-gray-400 shadow-sm focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm transition-colors"
                 />
               </div>
             </div>

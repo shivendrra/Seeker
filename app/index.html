@@ -13,18 +13,78 @@
 }
 </script>
 <script src="https://cdn.tailwindcss.com"></script>
+<script>
+  tailwind.config = {
+    darkMode: 'class',
+  }
+</script>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
 <style>
+  html, body, #root {
+    height: 100%;
+  }
   body {
     font-family: 'Inter', sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
   .material-symbols-outlined {
     font-variation-settings:
     'FILL' 0,
     'wght' 400,
     'GRAD' 0,
-    'opsz' 24
+    'opsz' 24;
+    line-height: 1;
+    vertical-align: middle;
+  }
+
+  /* Custom Scrollbar Styles */
+  :root {
+    --scrollbar-track-light: #f4f4f5; /* zinc-100 */
+    --scrollbar-thumb-light: #d4d4d8; /* zinc-300 */
+    --scrollbar-thumb-hover-light: #a1a1aa; /* zinc-400 */
+
+    --scrollbar-track-dark: #27272a; /* zinc-800 */
+    --scrollbar-thumb-dark: #52525b; /* zinc-600 */
+    --scrollbar-thumb-hover-dark: #71717a; /* zinc-500 */
+  }
+
+  /* For Webkit-based browsers (Chrome, Safari, Edge) */
+  ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+  ::-webkit-scrollbar-track {
+    background-color: var(--scrollbar-track-light);
+  }
+  ::-webkit-scrollbar-thumb {
+    background-color: var(--scrollbar-thumb-light);
+    border-radius: 10px;
+    border: 2px solid var(--scrollbar-track-light);
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background-color: var(--scrollbar-thumb-hover-light);
+  }
+
+  .dark ::-webkit-scrollbar-track {
+    background-color: var(--scrollbar-track-dark);
+  }
+  .dark ::-webkit-scrollbar-thumb {
+    background-color: var(--scrollbar-thumb-dark);
+    border-color: var(--scrollbar-track-dark);
+  }
+  .dark ::-webkit-scrollbar-thumb:hover {
+    background-color: var(--scrollbar-thumb-hover-dark);
+  }
+
+  /* For Firefox */
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: var(--scrollbar-thumb-light) var(--scrollbar-track-light);
+  }
+  .dark * {
+    scrollbar-color: var(--scrollbar-thumb-dark) var(--scrollbar-track-dark);
   }
 </style>
 <div id="root"></div>

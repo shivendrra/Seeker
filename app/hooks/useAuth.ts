@@ -1,29 +1,49 @@
+
 import { useState, useEffect } from 'react';
-import { onAuthChange } from '../services/firebaseService';
-import type { User } from '../types';
+import { onAuthChange, getUserProfile } from '../services/firebaseService';
+import type { User, UserProfile } from '../types';
 
 export const useAuth = () => {
   const [user, setUser] = useState<User | null>(null);
+  const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
   const [loading, setLoading] = useState(true);
   const [isProfileIncomplete, setIsProfileIncomplete] = useState(false);
 
   useEffect(() => {
-    const unsubscribe = onAuthChange((firebaseUser) => {
+    let unsubscribeProfile: (() => void) | null = null;
+
+    const unsubscribeAuth = onAuthChange((firebaseUser) => {
+      if (unsubscribeProfile) {
+        unsubscribeProfile();
+        unsubscribeProfile = null;
+      }
+
       setUser(firebaseUser);
       
-      // A user who just signed up with email/password won't have a displayName
-      // until they complete the profile setup step.
-      if (firebaseUser && !firebaseUser.displayName) {
-        setIsProfileIncomplete(true);
+      if (firebaseUser) {
+        unsubscribeProfile = getUserProfile(firebaseUser.uid, (profile) => {
+          setUserProfile(profile);
+          if (profile) {
+            setIsProfileIncomplete(!profile.displayName);
+          } else {
+            setIsProfileIncomplete(true);
+          }
+          setLoading(false);
+        });
       } else {
+        setUserProfile(null);
         setIsProfileIncomplete(false);
+        setLoading(false);
       }
-      
-      setLoading(false);
     });
 
-    return () => unsubscribe();
+    return () => {
+      unsubscribeAuth();
+      if (unsubscribeProfile) {
+        unsubscribeProfile();
+      }
+    };
   }, []);
 
-  return { user, loading, isProfileIncomplete };
+  return { user, userProfile, loading, isProfileIncomplete };
 };

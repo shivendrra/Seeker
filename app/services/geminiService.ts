@@ -3,7 +3,6 @@ import { SYSTEM_PROMPT } from '../constants';
 import { Message } from '../types';
 
 const ai = new GoogleGenAI({ apiKey: process.env.API_KEY! });
-const model = ai.models['gemini-2.5-pro'];
 
 // Helper to transform our Message[] into Gemini's Content[] format
 const buildHistory = (messages: Message[]): Content[] => {
@@ -18,7 +17,8 @@ export const runResearchAgentStream = async (
   history: Message[]
 ) => {
   try {
-    const stream = await model.generateContentStream({
+    const stream = await ai.models.generateContentStream({
+      model: 'gemini-2.5-pro',
       contents: [
         ...buildHistory(history),
         { role: 'user', parts: [{ text: currentMessage }] }
