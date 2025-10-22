@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { User, UserProfileData } from '../types';
 import { createUserProfile } from '../services/firebaseService';
@@ -55,7 +54,7 @@ const ProfileSetupScreen: React.FC<ProfileSetupScreenProps> = ({ user }) => {
             Tell us a bit about yourself to get started.
           </p>
         </div>
-        <div className="bg-white py-8 px-12 shadow-xl">
+        <div className="bg-white py-8 px-6 sm:px-12 shadow-xl">
           <form className="space-y-6" onSubmit={handleSubmit}>
             <div>
               <label htmlFor="displayName" className="block text-md font-medium text-gray-700">

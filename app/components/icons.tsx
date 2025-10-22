@@ -38,6 +38,10 @@ export const DocumentIcon: React.FC<{ className?: string }> = ({ className }) =>
   <GoogleIcon iconName="article" className={className} />
 );
 
+export const NewIcon: React.FC<{ className?: string }> = ({ className }) => (
+  <GoogleIcon iconName="note_stack_add" className={className} />
+);
+
 export const TraceIcon: React.FC<{ className?: string }> = ({ className }) => (
   <GoogleIcon iconName="terminal" className={className} />
 );
@@ -129,4 +133,12 @@ export const DeleteIcon: React.FC<{ className?: string }> = ({ className }) => (
 
 export const PaletteIcon: React.FC<{ className?: string }> = ({ className }) => (
   <GoogleIcon iconName="palette" className={className} />
+);
+
+export const OpenInNewIcon: React.FC<{ className?: string }> = ({ className }) => (
+  <GoogleIcon iconName="open_in_new" className={className} />
+);
+
+export const MenuIcon: React.FC<{ className?: string }> = ({ className }) => (
+  <GoogleIcon iconName="menu" className={className} />
 );

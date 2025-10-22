@@ -17,15 +17,15 @@ export const runResearchAgentStream = async (
   history: Message[]
 ) => {
   try {
+    // Fix: Pass systemInstruction as a string inside the config object, as per the coding guidelines.
     const stream = await ai.models.generateContentStream({
       model: 'gemini-2.5-pro',
       contents: [
         ...buildHistory(history),
         { role: 'user', parts: [{ text: currentMessage }] }
       ],
-      systemInstruction: {
-        role: 'system',
-        parts: [{ text: SYSTEM_PROMPT }]
+      config: {
+        systemInstruction: SYSTEM_PROMPT
       },
     });
     return stream;

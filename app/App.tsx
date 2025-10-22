@@ -7,6 +7,7 @@ import QueryInput from './components/QueryInput';
 import ProfileSetupScreen from './components/ProfileSetupScreen';
 import SettingsScreen from './components/SettingsScreen';
 import TraceView from './components/TraceView';
+import MobileHeader from './components/MobileHeader';
 import { Message, ChatSession, Trace, Source } from './types';
 import {
   getUserSessions,
@@ -31,7 +32,11 @@ function App() {
   const [activeTrace, setActiveTrace] = useState<Trace | null>(null);
   const [activeSources, setActiveSources] = useState<Source[] | null>(null);
   const [theme, setTheme] = useState<'light' | 'dark'>('light');
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [isTraceViewOpen, setIsTraceViewOpen] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+
+  const hasTraceDetails = !!(activeTrace || activeSources);
 
   useEffect(() => {
     if (userProfile?.settings?.theme) {
@@ -159,27 +164,87 @@ function App() {
 
   return (
     <>
-      <div className="flex h-screen bg-white dark:bg-zinc-950 text-gray-900 dark:text-zinc-100">
-        <LeftSidebar
-          user={user}
-          sessions={sessions}
-          activeSessionId={activeSessionId}
-          onNewSession={handleNewSession}
-          onSelectSession={setActiveSessionId}
-          onOpenSettings={() => setIsSettingsOpen(true)}
-          onDeleteSession={handleDeleteSession}
-        />
+      <div className="flex h-screen bg-white dark:bg-zinc-950 text-gray-900 dark:text-zinc-100 overflow-hidden">
+        {/* Left Sidebar - visible from MD, slide-out below */}
+        <div
+          className={`
+            fixed inset-y-0 left-0 z-40 w-72 
+            transition-transform duration-300 ease-in-out 
+            md:relative md:translate-x-0 md:inset-auto md:z-auto
+            ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'}
+          `}
+        >
+          <LeftSidebar
+            user={user}
+            sessions={sessions}
+            activeSessionId={activeSessionId}
+            onNewSession={() => {
+              handleNewSession();
+              setIsSidebarOpen(false);
+            }}
+            onSelectSession={(id) => {
+              setActiveSessionId(id);
+              setIsSidebarOpen(false);
+            }}
+            onOpenSettings={() => {
+              setIsSettingsOpen(true);
+              setIsSidebarOpen(false);
+            }}
+            onDeleteSession={handleDeleteSession}
+            onClose={() => setIsSidebarOpen(false)}
+          />
+        </div>
+
+        {/* Left Sidebar Backdrop */}
+        {isSidebarOpen && (
+          <div
+            className="fixed inset-0 bg-black bg-opacity-50 z-30 md:hidden"
+            onClick={() => setIsSidebarOpen(false)}
+          ></div>
+        )}
+
+        {/* Main Content Area */}
         <div className="flex-1 flex flex-col min-w-0">
+          <MobileHeader
+            onToggleSidebar={() => setIsSidebarOpen(!isSidebarOpen)}
+            sessions={sessions}
+            activeSessionId={activeSessionId}
+            onToggleTraceView={() => setIsTraceViewOpen(!isTraceViewOpen)}
+            hasTraceDetails={hasTraceDetails}
+          />
           <main className="flex-1 flex flex-col overflow-hidden">
             <ResponseDisplay messages={messages} />
             <div ref={messagesEndRef} />
           </main>
           <QueryInput onSend={handleSend} isLoading={isLoading} activeSessionId={activeSessionId} />
         </div>
-        {(userProfile?.settings?.showTrace !== false) && <TraceView trace={activeTrace} sources={activeSources} />}
+
+        {/* Right TraceView (Static on XL+) */}
+        <div className="hidden xl:flex xl:flex-shrink-0 w-80">
+          {(userProfile?.settings?.showTrace !== false) && <TraceView trace={activeTrace} sources={activeSources} onClose={() => setIsTraceViewOpen(false)} />}
+        </div>
+        
+        {/* Right TraceView (Slide-out on < XL) */}
+        <div
+          className={`
+            fixed inset-y-0 right-0 z-50 w-80
+            transition-transform duration-300 ease-in-out xl:hidden
+            ${isTraceViewOpen ? 'translate-x-0' : 'translate-x-full'}
+          `}
+        >
+          {(userProfile?.settings?.showTrace !== false) && <TraceView trace={activeTrace} sources={activeSources} onClose={() => setIsTraceViewOpen(false)} />}
+        </div>
+        
+        {/* Right TraceView Backdrop */}
+        {isTraceViewOpen && (
+          <div
+            className="fixed inset-0 bg-black bg-opacity-50 z-40 xl:hidden"
+            onClick={() => setIsTraceViewOpen(false)}
+          ></div>
+        )}
       </div>
       {isSettingsOpen && (
-        <SettingsScreen 
+        <SettingsScreen
           user={user}
           userProfile={userProfile}
           onClose={() => setIsSettingsOpen(false)}

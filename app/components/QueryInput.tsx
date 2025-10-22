@@ -73,7 +73,7 @@ const QueryInput: React.FC<QueryInputProps> = ({ onSend, isLoading, activeSessio
 
 
   return (
-    <div className="p-4 bg-white dark:bg-zinc-950 border-t border-gray-200 dark:border-zinc-800 shrink-0">
+    <div className="p-2 md:p-4 bg-white dark:bg-zinc-950 border-t border-gray-200 dark:border-zinc-800 shrink-0">
       <div className="relative">
         <textarea
           ref={textareaRef}
@@ -92,7 +92,7 @@ const QueryInput: React.FC<QueryInputProps> = ({ onSend, isLoading, activeSessio
           className="absolute top-1/2 right-4 transform -translate-y-1/2 p-2 text-indigo-600 dark:text-indigo-400 hover:bg-indigo-100 dark:hover:bg-indigo-900/50 disabled:text-gray-400 dark:disabled:text-zinc-500 disabled:bg-transparent transition-all duration-150 ease-in-out hover:scale-110 flex items-center justify-center w-10 h-10"
         >
           {isLoading ? (
-            <div className="w-6 h-6 border-2 border-t-indigo-600 border-gray-200 dark:border-zinc-600 animate-spin"></div>
+            <div className="w-6 h-6 border-2 border-t-indigo-600 border-gray-200 rounded-full dark:border-zinc-600 animate-spin"></div>
           ) : (
             <SendIcon className="w-6 h-6" />
           )}

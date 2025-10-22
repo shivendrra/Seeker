@@ -8,6 +8,8 @@ import {
   UserCircleIcon,
   LogoutIcon,
   DeleteIcon,
+  CloseIcon,
+  NewIcon
 } from './icons';
 import ConfirmationDialog from './ConfirmationDialog';
 
@@ -19,6 +21,7 @@ interface LeftSidebarProps {
   onSelectSession: (sessionId: string) => void;
   onOpenSettings: () => void;
   onDeleteSession: (sessionId: string) => void;
+  onClose: () => void;
 }
 
 const LeftSidebar: React.FC<LeftSidebarProps> = ({
@@ -29,6 +32,7 @@ const LeftSidebar: React.FC<LeftSidebarProps> = ({
   onSelectSession,
   onOpenSettings,
   onDeleteSession,
+  onClose,
 }) => {
   const [sessionToDelete, setSessionToDelete] = useState<ChatSession | null>(null);
 
@@ -46,25 +50,33 @@ const LeftSidebar: React.FC<LeftSidebarProps> = ({
 
   return (
     <>
-      <div className="w-72 bg-gray-50 dark:bg-zinc-900 border-r border-gray-200 dark:border-zinc-800 flex flex-col font-[500] overflow-hidden">
+      <div className="h-full bg-gray-50 dark:bg-zinc-900 border-r border-gray-200 dark:border-zinc-800 flex flex-col font-[500] overflow-hidden">
         {/* Header */}
-        <div className="p-4 border-b border-gray-200 dark:border-zinc-800 flex items-center gap-3">
-          <div className="flex items-center justify-center w-9 h-9">
-            <LogoIcon className="w-7 h-7 text-indigo-600 dark:text-indigo-400" />
+        <div className="p-4 border-b border-gray-200 dark:border-zinc-800 flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <div className="flex items-center justify-center w-9 h-9">
+              <LogoIcon className="w-7 h-7 text-indigo-600 dark:text-indigo-400" />
+            </div>
+            <h1 className="text-xl font-semibold text-gray-800 dark:text-zinc-100 leading-none">
+              Seeker
+            </h1>
           </div>
-          <h1 className="text-xl font-semibold text-gray-800 dark:text-zinc-100 leading-none">
-            Seeker
-          </h1>
+          <button
+            onClick={onClose}
+            className="md:hidden p-1 text-gray-500 dark:text-zinc-400 hover:bg-gray-200 dark:hover:bg-zinc-700 rounded-full"
+            aria-label="Close sidebar"
+          >
+            <CloseIcon className="w-6 h-6" />
+          </button>
         </div>
 
-        {/* New Research Button */}
         <div className="p-3">
           <button
             onClick={onNewSession}
             className="w-full flex items-center gap-2.5 p-3 text-gray-700 dark:text-zinc-200 hover:bg-indigo-100 dark:hover:bg-indigo-900/40 font-semibold tracking-wide transition-all"
           >
             <div className="flex items-center justify-center w-5 h-5">
-              <DocumentIcon className="w-5 h-5 text-indigo-600 dark:text-indigo-400" />
+              <NewIcon className="w-5 h-5 text-indigo-600 dark:text-indigo-400" />
             </div>
             <span className="leading-tight">New Research</span>
           </button>

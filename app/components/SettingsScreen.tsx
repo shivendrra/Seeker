@@ -61,14 +61,14 @@ const TabButton: React.FC<{id: string, label: string, icon: React.ReactNode, act
         role="tab"
         aria-selected={active}
         onClick={onClick}
-        className={`w-full flex items-center gap-3 p-3 text-sm font-medium transition-colors ${
+        className={`flex-shrink-0 md:w-full flex items-center gap-3 p-3 text-sm font-medium transition-colors rounded-lg ${
             active 
                 ? 'bg-indigo-100 text-indigo-700 dark:bg-indigo-500/20 dark:text-indigo-300'
                 : 'text-gray-600 dark:text-zinc-400 hover:bg-gray-100 dark:hover:bg-zinc-700'
         }`}
     >
         {icon}
-        <span>{label}</span>
+        <span className="whitespace-nowrap">{label}</span>
     </button>
 );
 
@@ -164,7 +164,8 @@ const SettingsScreen: React.FC<SettingsScreenProps> = ({ user, userProfile, onCl
   };
 
   const handleThemeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const newTheme = e.target.checked ? 'dark' : 'light';
+    // Fix: Explicitly type `newTheme` to prevent the type of `newSettings.theme` from being widened to `string`.
+    const newTheme: 'light' | 'dark' = e.target.checked ? 'dark' : 'light';
     setTheme(newTheme);
     const newSettings = { ...settings, theme: newTheme };
     setSettings(newSettings);
@@ -188,12 +189,14 @@ const SettingsScreen: React.FC<SettingsScreenProps> = ({ user, userProfile, onCl
           </button>
         </div>
 
-        <div className="flex-grow overflow-y-auto flex min-h-0">
-            <nav className="w-56 p-4 border-r border-gray-200 dark:border-zinc-700 flex-shrink-0 space-y-2">
-                <TabButton id="profile" label="Profile" icon={<UserCircleIcon className="w-5 h-5" />} active={activeTab === 'profile'} onClick={() => setActiveTab('profile')} />
-                <TabButton id="security" label="Security" icon={<LockIcon className="w-5 h-5" />} active={activeTab === 'security'} onClick={() => setActiveTab('security')} />
-                <TabButton id="research" label="Research" icon={<SearchIcon className="w-5 h-5" />} active={activeTab === 'research'} onClick={() => setActiveTab('research')} />
-                <TabButton id="appearance" label="Appearance" icon={<PaletteIcon className="w-5 h-5" />} active={activeTab === 'appearance'} onClick={() => setActiveTab('appearance')} />
+        <div className="flex-grow overflow-y-auto flex flex-col md:flex-row min-h-0">
+            <nav className="w-full md:w-56 p-2 md:p-4 border-b md:border-b-0 md:border-r border-gray-200 dark:border-zinc-700 flex-shrink-0">
+                <div className="flex flex-row md:flex-col space-x-1 md:space-x-0 md:space-y-2 overflow-x-auto md:overflow-visible -mx-2 px-2 pb-2 md:pb-0">
+                    <TabButton id="profile" label="Profile" icon={<UserCircleIcon className="w-5 h-5" />} active={activeTab === 'profile'} onClick={() => setActiveTab('profile')} />
+                    <TabButton id="security" label="Security" icon={<LockIcon className="w-5 h-5" />} active={activeTab === 'security'} onClick={() => setActiveTab('security')} />
+                    <TabButton id="research" label="Research" icon={<SearchIcon className="w-5 h-5" />} active={activeTab === 'research'} onClick={() => setActiveTab('research')} />
+                    <TabButton id="appearance" label="Appearance" icon={<PaletteIcon className="w-5 h-5" />} active={activeTab === 'appearance'} onClick={() => setActiveTab('appearance')} />
+                </div>
             </nav>
 
             <div className="flex-1 overflow-y-auto">
