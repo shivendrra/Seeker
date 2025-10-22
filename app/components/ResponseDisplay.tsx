@@ -17,9 +17,9 @@ const MarkdownLine: React.FC<{ text: string }> = ({ text }) => {
     } else if (match[3]) {
       elements.push(<em key={`i-${keyCounter++}-${match.index}`}>{match[4]}</em>);
     } else if (match[5]) {
-      elements.push(<code key={`c-${keyCounter++}-${match.index}`} className="bg-gray-100 dark:bg-zinc-800 text-indigo-600 dark:text-indigo-300 text-sm rounded px-1.5 py-0.5 font-mono">{match[6]}</code>);
+      elements.push(<code key={`c-${keyCounter++}-${match.index}`} className="bg-gray-100 dark:bg-zinc-800 text-indigo-600 dark:text-indigo-300 text-sm rounded px-1.5 py-0.5 font-mono break-words">{match[6]}</code>);
     } else if (match[7]) {
-      elements.push(<a href={match[9]} key={`a-${keyCounter++}-${match.index}`} target="_blank" rel="noopener noreferrer" className="text-indigo-600 dark:text-indigo-400 hover:underline">{match[8]}</a>);
+      elements.push(<a href={match[9]} key={`a-${keyCounter++}-${match.index}`} target="_blank" rel="noopener noreferrer" className="text-indigo-600 dark:text-indigo-400 hover:underline break-words">{match[8]}</a>);
     } else if (match[10]) {
       elements.push(<sup key={`sup-${keyCounter++}-${match.index}`} className="bg-indigo-100 dark:bg-indigo-500/20 text-indigo-700 dark:text-indigo-300 font-semibold px-1 py-0.5 rounded text-xs ml-1 cursor-pointer" title={match[11]}>{match[11]}</sup>);
     }
@@ -39,7 +39,7 @@ const SimpleMarkdown: React.FC<{ text: string }> = ({ text }) => {
 
   const flushList = () => {
     if (listItems.length > 0) {
-      elements.push(<ul key={`ul-${elements.length}`} className="list-disc list-inside ml-6 my-2 space-y-1 text-base leading-relaxed">{listItems.map((item, i) => <li key={i}><MarkdownLine text={item} /></li>)}</ul>);
+      elements.push(<ul key={`ul-${elements.length}`} className="list-disc list-inside ml-6 my-2 space-y-1 text-base leading-relaxed">{listItems.map((item, i) => <li key={i} className="break-words"><MarkdownLine text={item} /></li>)}</ul>);
       listItems = [];
     }
   };
@@ -52,7 +52,7 @@ const SimpleMarkdown: React.FC<{ text: string }> = ({ text }) => {
             <thead className="bg-gray-50 dark:bg-zinc-800/60">
               <tr>{tableHeaders.map((header, i) => <th key={i} scope="col" className="px-6 py-3 text-left text-sm font-semibold text-gray-700 dark:text-zinc-200 uppercase tracking-wider">{header.trim()}</th>)}</tr>
             </thead>
-            <tbody className="bg-white dark:bg-zinc-800 divide-y divide-gray-200 dark:divide-zinc-700">{tableRows.map((row, i) => <tr key={i}>{row.map((cell, j) => <td key={j} className="px-6 py-3 text-gray-800 dark:text-zinc-300 text-base"><MarkdownLine text={cell.trim()} /></td>)}</tr>)}</tbody>
+            <tbody className="bg-white dark:bg-zinc-800 divide-y divide-gray-200 dark:divide-zinc-700">{tableRows.map((row, i) => <tr key={i}>{row.map((cell, j) => <td key={j} className="px-6 py-3 text-gray-800 dark:text-zinc-300 text-base break-words"><MarkdownLine text={cell.trim()} /></td>)}</tr>)}</tbody>
           </table>
         </div>
       );
@@ -88,13 +88,13 @@ const SimpleMarkdown: React.FC<{ text: string }> = ({ text }) => {
     const headingMatch = trimmed.match(/^(#{1,6})\s+(.*)$/);
     if (headingMatch) {
       const level = headingMatch[1].length, content = headingMatch[2];
-      const className = `${level === 1 ? 'text-2xl font-extrabold mt-8 mb-4' : level === 2 ? 'text-xl font-bold mt-6 mb-3 border-b dark:border-zinc-700 pb-1' : level === 3 ? 'text-lg font-semibold mt-4 mb-2' : 'text-base font-semibold mt-3 mb-1'} text-gray-900 dark:text-zinc-100 poppins`;
+      const className = `${level === 1 ? 'text-2xl font-extrabold mt-8 mb-4' : level === 2 ? 'text-xl font-bold mt-6 mb-3 border-b dark:border-zinc-700 pb-1' : level === 3 ? 'text-lg font-semibold mt-4 mb-2' : 'text-base font-semibold mt-3 mb-1'} text-gray-900 dark:text-zinc-100 poppins break-words`;
       elements.push(React.createElement(`h${level}`, { key: `h${level}-${lineIdx}`, className }, <MarkdownLine text={content} />));
       return;
     }
 
     if (trimmed.startsWith('> ')) {
-      elements.push(<blockquote key={`bq-${lineIdx}`} className="border-l-4 poppins border-gray-300 dark:border-zinc-600 pl-4 italic text-gray-600 dark:text-zinc-400 my-2 text-base leading-relaxed"><MarkdownLine text={trimmed.replace(/^>\s/, '')} /></blockquote>);
+      elements.push(<blockquote key={`bq-${lineIdx}`} className="border-l-4 poppins border-gray-300 dark:border-zinc-600 pl-4 italic text-gray-600 dark:text-zinc-400 my-2 text-base leading-relaxed break-words"><MarkdownLine text={trimmed.replace(/^>\s/, '')} /></blockquote>);
       return;
     }
 
@@ -103,7 +103,7 @@ const SimpleMarkdown: React.FC<{ text: string }> = ({ text }) => {
       return;
     }
 
-    if (trimmed !== '') elements.push(<p key={`p-${lineIdx}`} className="text-base leading-relaxed text-gray-800 dark:text-zinc-300"><MarkdownLine text={line} /></p>);
+    if (trimmed !== '') elements.push(<p key={`p-${lineIdx}`} className="text-base leading-relaxed text-gray-800 dark:text-zinc-300 break-words"><MarkdownLine text={line} /></p>);
   });
 
   flushList(); flushTable(); flushCodeBlock();
@@ -122,20 +122,20 @@ const ResponseDisplay: React.FC<{ messages: Message[] }> = ({ messages }) => {
   if (!messages || messages.length === 0) return <div className="flex-1 overflow-y-auto"><WelcomeScreen /></div>;
 
   return (
-    <div className="flex-1 overflow-y-auto p-4 md:p-6 poppins">
+    <div className="flex-1 overflow-y-auto overflow-x-hidden p-4 md:p-6 poppins">
       <div className="max-w-4xl mx-auto space-y-8">
         {messages.map(message => (
-          <div key={message.id} className="flex items-start gap-4">
+          <div key={message.id} className="flex items-start gap-4 min-w-0">
             {message.sender === 'bot' ? (
               <div className="w-8 h-8 flex-shrink-0 bg-indigo-100 dark:bg-zinc-700 rounded-full flex items-center justify-center"><LogoIcon className="w-5 h-5 text-indigo-600 dark:text-indigo-400" /></div>
             ) : (
               <div className="w-8 h-8 flex-shrink-0 bg-gray-200 dark:bg-zinc-600 rounded-full flex items-center justify-center"><UserCircleIcon className="w-6 h-6 text-gray-600 dark:text-zinc-300" /></div>
             )}
-            <div className="flex-1 text-base leading-relaxed">
+            <div className="flex-1 text-base leading-relaxed min-w-0">
               <div className="font-bold text-gray-800 dark:text-zinc-100 mb-1">{message.sender === 'user' ? 'You' : 'Seeker'}</div>
-              <div className="prose prose-sm max-w-none text-gray-800 dark:text-zinc-300">
+              <div className="prose prose-sm max-w-none text-gray-800 dark:text-zinc-300 break-words overflow-wrap-anywhere">
                 {message.sender === 'user' ? (
-                  <p className="whitespace-pre-wrap">{message.text}</p>
+                  <p className="whitespace-pre-wrap break-words">{message.text}</p>
                 ) : message.text ? (
                   <SimpleMarkdown text={message.text} />
                 ) : (
