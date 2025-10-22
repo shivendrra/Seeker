@@ -81,7 +81,7 @@ const QueryInput: React.FC<QueryInputProps> = ({ onSend, isLoading, activeSessio
           onChange={(e) => setQuery(e.target.value)}
           onKeyDown={handleKeyDown}
           placeholder={disabled ? "Select or start a new research session" : "Ask Seeker a research question..."}
-          className="w-full p-4 pr-16 text-gray-900 dark:text-zinc-200 bg-white dark:bg-zinc-800 border border-gray-200 dark:border-zinc-700 rounded-xl focus:ring-2 focus:ring-indigo-400 focus:border-transparent resize-none overflow-y-hidden disabled:bg-gray-100 dark:disabled:bg-zinc-800/50 dark:placeholder-zinc-500 transition-colors"
+          className="w-full p-4 pr-16 text-gray-900 dark:text-zinc-200 bg-white dark:bg-zinc-800 border border-gray-200 dark:border-zinc-700 focus:ring-2 focus:ring-indigo-400 focus:border-transparent resize-none overflow-y-hidden disabled:bg-gray-100 dark:disabled:bg-zinc-800/50 dark:placeholder-zinc-500 transition-colors"
           rows={1}
           disabled={isLoading || disabled}
           style={{ maxHeight: '200px' }}
@@ -89,10 +89,10 @@ const QueryInput: React.FC<QueryInputProps> = ({ onSend, isLoading, activeSessio
         <button
           onClick={handleSend}
           disabled={isLoading || !query.trim() || disabled}
-          className="absolute top-1/2 right-4 transform -translate-y-1/2 p-2 text-indigo-600 dark:text-indigo-400 rounded-full hover:bg-indigo-100 dark:hover:bg-indigo-900/50 disabled:text-gray-400 dark:disabled:text-zinc-500 disabled:bg-transparent transition-all duration-150 ease-in-out hover:scale-110 flex items-center justify-center w-10 h-10"
+          className="absolute top-1/2 right-4 transform -translate-y-1/2 p-2 text-indigo-600 dark:text-indigo-400 hover:bg-indigo-100 dark:hover:bg-indigo-900/50 disabled:text-gray-400 dark:disabled:text-zinc-500 disabled:bg-transparent transition-all duration-150 ease-in-out hover:scale-110 flex items-center justify-center w-10 h-10"
         >
           {isLoading ? (
-            <div className="w-6 h-6 border-2 border-t-indigo-600 border-gray-200 dark:border-zinc-600 rounded-full animate-spin"></div>
+            <div className="w-6 h-6 border-2 border-t-indigo-600 border-gray-200 dark:border-zinc-600 animate-spin"></div>
           ) : (
             <SendIcon className="w-6 h-6" />
           )}

@@ -61,7 +61,7 @@ const LeftSidebar: React.FC<LeftSidebarProps> = ({
         <div className="p-3">
           <button
             onClick={onNewSession}
-            className="w-full flex items-center gap-2.5 p-3 rounded-lg text-gray-700 dark:text-zinc-200 hover:bg-indigo-100 dark:hover:bg-indigo-900/40 font-semibold tracking-wide transition-all"
+            className="w-full flex items-center gap-2.5 p-3 text-gray-700 dark:text-zinc-200 hover:bg-indigo-100 dark:hover:bg-indigo-900/40 font-semibold tracking-wide transition-all"
           >
             <div className="flex items-center justify-center w-5 h-5">
               <DocumentIcon className="w-5 h-5 text-indigo-600 dark:text-indigo-400" />
@@ -81,7 +81,7 @@ const LeftSidebar: React.FC<LeftSidebarProps> = ({
                   e.preventDefault();
                   onSelectSession(session.id);
                 }}
-                className={`group flex items-center justify-between p-3 rounded-lg text-sm truncate transition-colors ${
+                className={`group flex items-center justify-between p-3 text-sm truncate transition-colors ${
                   activeSessionId === session.id
                     ? 'bg-indigo-100 text-indigo-700 dark:bg-indigo-500/20 dark:text-indigo-300 font-semibold'
                     : 'text-gray-600 dark:text-zinc-400 hover:bg-gray-100 dark:hover:bg-zinc-800 hover:text-gray-900 dark:hover:text-zinc-100'
@@ -131,7 +131,7 @@ const LeftSidebar: React.FC<LeftSidebarProps> = ({
           {/* Settings */}
           <button
             onClick={onOpenSettings}
-            className="w-full flex items-center gap-2.5 p-3 rounded-lg text-gray-700 dark:text-zinc-300 hover:bg-gray-200 dark:hover:bg-zinc-800 mb-2 transition-all"
+            className="w-full flex items-center gap-2.5 p-3 text-gray-700 dark:text-zinc-300 hover:bg-gray-200 dark:hover:bg-zinc-800 mb-2 transition-all"
           >
             <div className="flex items-center justify-center w-5 h-5">
               <SettingsIcon className="w-5 h-5 text-gray-600 dark:text-zinc-400" />
@@ -142,7 +142,7 @@ const LeftSidebar: React.FC<LeftSidebarProps> = ({
           {/* Logout */}
           <button
             onClick={() => logout()}
-            className="w-full flex items-center gap-2.5 p-3 rounded-lg text-gray-700 dark:text-zinc-300 hover:bg-gray-200 dark:hover:bg-zinc-800 transition-all"
+            className="w-full flex items-center gap-2.5 p-3 text-gray-700 dark:text-zinc-300 hover:bg-gray-200 dark:hover:bg-zinc-800 transition-all"
           >
             <div className="flex items-center justify-center w-5 h-5">
               <LogoutIcon className="w-5 h-5 text-gray-600 dark:text-zinc-400" />

@@ -61,7 +61,7 @@ const TabButton: React.FC<{id: string, label: string, icon: React.ReactNode, act
         role="tab"
         aria-selected={active}
         onClick={onClick}
-        className={`w-full flex items-center gap-3 p-3 rounded-lg text-sm font-medium transition-colors ${
+        className={`w-full flex items-center gap-3 p-3 text-sm font-medium transition-colors ${
             active 
                 ? 'bg-indigo-100 text-indigo-700 dark:bg-indigo-500/20 dark:text-indigo-300'
                 : 'text-gray-600 dark:text-zinc-400 hover:bg-gray-100 dark:hover:bg-zinc-700'
@@ -173,7 +173,7 @@ const SettingsScreen: React.FC<SettingsScreenProps> = ({ user, userProfile, onCl
     });
   };
 
-  const inputStyles = "block w-full rounded-lg border border-gray-300 dark:border-zinc-600 bg-white dark:bg-zinc-700 px-3 py-2 text-gray-900 dark:text-zinc-200 placeholder-gray-400 dark:placeholder-zinc-500 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent sm:text-sm";
+  const inputStyles = "block w-full border border-gray-300 dark:border-zinc-600 bg-white dark:bg-zinc-700 px-3 py-2 text-gray-900 dark:text-zinc-200 placeholder-gray-400 dark:placeholder-zinc-500 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent sm:text-sm";
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4" style={{ backdropFilter: 'blur(4px)' }}>
@@ -210,7 +210,7 @@ const SettingsScreen: React.FC<SettingsScreenProps> = ({ user, userProfile, onCl
                                 {profileError && <p className="text-red-600">{profileError}</p>}
                                 {profileSuccess && <p className="text-green-600">{profileSuccess}</p>}
                              </div>
-                            <button type="submit" disabled={isProfileLoading} className="inline-flex items-center justify-center rounded-lg border border-transparent bg-indigo-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:bg-indigo-400">
+                            <button type="submit" disabled={isProfileLoading} className="inline-flex items-center justify-center border border-transparent bg-indigo-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:bg-indigo-400">
                                 {isProfileLoading ? <div className="w-5 h-5 border-2 border-t-white border-gray-200 rounded-full animate-spin"></div> : 'Save Changes'}
                             </button>
                         </div>
@@ -237,7 +237,7 @@ const SettingsScreen: React.FC<SettingsScreenProps> = ({ user, userProfile, onCl
                                 {passwordError && <p className="text-red-600">{passwordError}</p>}
                                 {passwordSuccess && <p className="text-green-600">{passwordSuccess}</p>}
                              </div>
-                            <button type="submit" disabled={isPasswordLoading} className="inline-flex items-center justify-center rounded-lg border border-transparent bg-gray-700 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 disabled:bg-gray-500">
+                            <button type="submit" disabled={isPasswordLoading} className="inline-flex items-center justify-center border border-transparent bg-gray-700 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 disabled:bg-gray-500">
                                 {isPasswordLoading ? <div className="w-5 h-5 border-2 border-t-white border-gray-200 rounded-full animate-spin"></div> : 'Change Password'}
                             </button>
                         </div>
@@ -275,7 +275,7 @@ const SettingsScreen: React.FC<SettingsScreenProps> = ({ user, userProfile, onCl
                                 {profileError && <p className="text-red-600">{profileError}</p>}
                                 {profileSuccess && <p className="text-green-600">{profileSuccess}</p>}
                              </div>
-                            <button type="submit" disabled={isProfileLoading} className="inline-flex items-center justify-center rounded-lg border border-transparent bg-indigo-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:bg-indigo-400">
+                            <button type="submit" disabled={isProfileLoading} className="inline-flex items-center justify-center border border-transparent bg-indigo-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:bg-indigo-400">
                                 {isProfileLoading ? <div className="w-5 h-5 border-2 border-t-white border-gray-200 rounded-full animate-spin"></div> : 'Save Changes'}
                             </button>
                         </div>

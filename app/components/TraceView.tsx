@@ -12,7 +12,7 @@ const ToolIcon: React.FC<{ toolName: string }> = ({ toolName }) => {
 const TabButton: React.FC<{ active: boolean; onClick: () => void; children: React.ReactNode }> = ({ active, onClick, children }) => (
     <button
         onClick={onClick}
-        className={`flex-1 flex items-center justify-center gap-2 py-2.5 px-3 text-sm font-semibold rounded-md transition-all transform hover:scale-105 ${
+        className={`flex-1 flex items-center justify-center gap-2 py-2.5 px-3 text-sm font-semibold transition-all transform hover:scale-105 ${
             active 
                 ? 'bg-indigo-100 text-indigo-700 dark:bg-indigo-500/20 dark:text-indigo-300' 
                 : 'text-gray-500 dark:text-zinc-400 hover:bg-gray-200 dark:hover:bg-zinc-700'
@@ -83,11 +83,11 @@ const TraceView: React.FC<{ trace: Trace | null; sources: Source[] | null }> = (
                                                 <div className="space-y-2">
                                                     <div>
                                                         <h4 className="text-xs font-semibold text-gray-500 dark:text-zinc-400">INPUT</h4>
-                                                        <pre className="whitespace-pre-wrap bg-gray-100 dark:bg-black/20 p-2 rounded-md text-xs font-mono text-gray-700 dark:text-zinc-300 mt-1 max-h-40 overflow-auto">{step.input}</pre>
+                                                        <pre className="whitespace-pre-wrap bg-gray-100 dark:bg-black/20 p-2 text-xs font-mono text-gray-700 dark:text-zinc-300 mt-1 max-h-40 overflow-auto">{step.input}</pre>
                                                     </div>
                                                     <div>
                                                         <h4 className="text-xs font-semibold text-gray-500 dark:text-zinc-400">OUTPUT</h4>
-                                                        <pre className="whitespace-pre-wrap bg-gray-100 dark:bg-black/20 p-2 rounded-md text-xs font-mono text-gray-700 dark:text-zinc-300 mt-1 max-h-40 overflow-auto">{step.output}</pre>
+                                                        <pre className="whitespace-pre-wrap bg-gray-100 dark:bg-black/20 p-2 text-xs font-mono text-gray-700 dark:text-zinc-300 mt-1 max-h-40 overflow-auto">{step.output}</pre>
                                                     </div>
                                                 </div>
                                             </div>
