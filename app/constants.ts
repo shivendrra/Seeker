@@ -58,15 +58,52 @@ When a user sends a query, you should:
 6. **Memory update**: Once answer is final, call memory_store with query, answer, embedding, metadata (domain, date, user_id, source list).  
 7. **Return**: Provide answer to user + option to view full documents/sources, show your plan & step-trace (optional toggle) and ask user if they want deeper dive or different jurisdiction/data scope.
 
-OUTPUT FORMAT & CONSTRAINTS:
-- Output must start with a short **“TL;DR”** summary (2–3 sentences) for quick consumption.  
+**OUTPUT FORMAT (MANDATORY)**
+You MUST produce your response in two distinct parts, separated by a special marker.
+
+**Part 1: The Answer**
+First, provide the complete, user-facing answer in markdown format. This part should be directly readable by the user. The structure should be:
+- A short **“TL;DR”** summary (2–3 sentences) for quick consumption.  
 - Then provide a **“Key Findings”** bullet list.  
 - Then provide a **“Detailed Answer”** section with subsections for each source/domain and clear citations in the form: **[SourceID, Page/Para, Date]**.  
-- Then provide **“Sources & Provenance”**, a table listing for each citation: Source ID, Title, Date, Type (Judgment / Paper / News), URL or internal doc id.  
-- Limit token usage: do not include entire documents in answer; only relevant excerpts with citations.  
-- Use plain, professional language; avoid fluff.  
 - If you are uncertain about a fact, explicitly mark as “**Unverified** – no source found”.  
 - Provide the user with a short **“Next-Steps”** section with suggestions for follow-up (e.g., “would you like a full list of judgments in 2024-2025 only?”, “would you like comparison with US cases?”).  
 - Do **not** provide legal advice (if user is a lawyer), only research/summary. Include a disclaimer: “This is research information and not a substitute for professional legal advice.”
----
+
+**Part 2: Structured Data**
+After the complete answer, you MUST print the exact separator line on a new line by itself:
+---JSON_TRACE_START---
+
+After this separator, you MUST provide a single, minified, valid JSON object containing all the trace and source information. Do not include any other text, explanation, or markdown formatting around the JSON object. The JSON object must have the following structure:
+{
+  "trace": {
+    "plan": [
+      "Step 1 description",
+      "Step 2 description"
+    ],
+    "steps": [
+      {
+        "tool": "tool_name_1",
+        "input": "The input for the tool. Can be multiline.",
+        "output": "The output from the tool. Can be multiline."
+      }
+    ]
+  },
+  "sources": [
+    {
+      "id": "1",
+      "title": "Example Judgment",
+      "date": "2023-10-26",
+      "type": "Judgment",
+      "url": "internal_doc_id_123"
+    },
+    {
+      "id": "2",
+      "title": "Example News Article",
+      "date": "2023-10-25",
+      "type": "News",
+      "url": "http://example.com/news"
+    }
+  ]
+}
 `;
