@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { SendIcon } from './icons';
+import { SendIcon } from '../icons';
 
 interface QueryInputProps {
   onSend: (query: string) => void;

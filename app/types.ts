@@ -1,8 +1,10 @@
-import type { User as FirebaseUser } from 'firebase/auth';
-import type { Timestamp } from 'firebase/firestore';
+// Fix: Use Firebase v9 compatibility import for User type.
+import firebase from 'firebase/compat/app';
+import 'firebase/compat/auth';
+import { type Timestamp } from "firebase/firestore";
 
 // Re-exporting the FirebaseUser type for use in the app
-export type User = FirebaseUser;
+export type User = firebase.User;
 
 export interface TraceStep {
   tool: string;

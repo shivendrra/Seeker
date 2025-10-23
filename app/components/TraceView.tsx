@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Trace, Source } from '../types';
-import { TraceIcon, SearchIcon, DocumentIcon, SourceIcon, LogoIcon, OpenInNewIcon, CloseIcon } from './icons';
+import { TraceIcon, SearchIcon, DocumentIcon, SourceIcon, LogoIcon, OpenInNewIcon, CloseIcon } from '../icons';
 
 // A helper to determine which icon to show for a given tool
 const ToolIcon: React.FC<{ toolName: string }> = ({ toolName }) => {

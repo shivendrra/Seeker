@@ -10,7 +10,7 @@ import {
   DeleteIcon,
   CloseIcon,
   NewIcon
-} from './icons';
+} from '../icons';
 import ConfirmationDialog from './ConfirmationDialog';
 
 interface LeftSidebarProps {

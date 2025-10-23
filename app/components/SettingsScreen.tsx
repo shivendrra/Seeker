@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { User, UserProfile, UserSettings } from '../types';
 import { updateUserSettings, updateUserAccount, reauthenticateAndChangePassword } from '../services/firebaseService';
-import { CloseIcon, LogoIcon, UserCircleIcon, LockIcon, SearchIcon, PaletteIcon } from './icons';
+import { CloseIcon, LogoIcon, UserCircleIcon, LockIcon, SearchIcon, PaletteIcon } from '../icons';
 
 interface SettingsScreenProps {
   user: User;
@@ -77,6 +77,8 @@ const SettingsScreen: React.FC<SettingsScreenProps> = ({ user, userProfile, onCl
   const [activeTab, setActiveTab] = useState('profile');
   const [settings, setSettings] = useState<UserSettings>(userProfile.settings || {} as UserSettings);
   const [displayName, setDisplayName] = useState('');
+  const [profession, setProfession] = useState('');
+  const [description, setDescription] = useState('');
   
   const [currentPassword, setCurrentPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
@@ -99,6 +101,8 @@ const SettingsScreen: React.FC<SettingsScreenProps> = ({ user, userProfile, onCl
     };
     setSettings(initialSettings);
     setDisplayName(userProfile.displayName || '');
+    setProfession(userProfile.profession || '');
+    setDescription(userProfile.description || '');
   }, [userProfile]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
@@ -119,7 +123,7 @@ const SettingsScreen: React.FC<SettingsScreenProps> = ({ user, userProfile, onCl
     try {
         await Promise.all([
             updateUserSettings(user.uid, settings),
-            updateUserAccount(user, { displayName })
+            updateUserAccount(user, { displayName, profession, description })
         ]);
         setProfileSuccess('Settings saved successfully!');
         setTimeout(() => setProfileSuccess(null), 3000);
@@ -206,6 +210,14 @@ const SettingsScreen: React.FC<SettingsScreenProps> = ({ user, userProfile, onCl
                             <div>
                                 <label htmlFor="displayName" className="block text-sm font-medium text-gray-700 dark:text-zinc-300 mb-1">Display Name</label>
                                 <input type="text" name="displayName" id="displayName" value={displayName} onChange={(e) => setDisplayName(e.target.value)} className={inputStyles} />
+                            </div>
+                             <div>
+                                <label htmlFor="profession" className="block text-sm font-medium text-gray-700 dark:text-zinc-300 mb-1">Profession</label>
+                                <input type="text" name="profession" id="profession" value={profession} onChange={(e) => setProfession(e.target.value)} placeholder="e.g., Journalist, Lawyer" className={inputStyles} />
+                            </div>
+                            <div>
+                                <label htmlFor="description" className="block text-sm font-medium text-gray-700 dark:text-zinc-300 mb-1">About Yourself (Bio)</label>
+                                <textarea name="description" id="description" rows={3} value={description} onChange={(e) => setDescription(e.target.value)} placeholder="A short bio..." className={inputStyles} />
                             </div>
                         </FormSection>
                          <div className="flex items-center justify-end gap-4 pt-5 border-t border-gray-200 dark:border-zinc-700">

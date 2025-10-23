@@ -1,7 +1,7 @@
 
 import React, { useState } from 'react';
 import { signInWithGoogle, signInWithEmail, signUpWithEmail } from '../services/firebaseService';
-import { LogoIcon, GoogleLogoIcon, CheckCircleIcon, VisibilityIcon, VisibilityOffIcon } from './icons';
+import { LogoIcon, GoogleLogoIcon, CheckCircleIcon, VisibilityIcon, VisibilityOffIcon } from '../icons';
 
 const Feature: React.FC<{ children: React.ReactNode }> = ({ children }) => (
   <li className="flex items-start gap-3">

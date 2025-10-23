@@ -1,6 +1,6 @@
 import React from 'react';
 import { Message } from '../types';
-import { UserCircleIcon, LogoIcon } from './icons';
+import { UserCircleIcon, LogoIcon } from '../icons';
 
 const MarkdownLine: React.FC<{ text: string }> = ({ text }) => {
   const regex = /(\*\*(.*?)\*\*)|(\*(.*?)\*)|(`(.*?)`)|(\[(.*?)\]\((.*?)\))|(\[([^\]]+?)\])/g;
@@ -33,7 +33,12 @@ const MarkdownLine: React.FC<{ text: string }> = ({ text }) => {
 const SimpleMarkdown: React.FC<{ text: string }> = ({ text }) => {
   if (!text) return null;
 
-  const lines = text.split('\n'), elements: React.ReactNode[] = [];
+  // Find the separator and only render content before it.
+  const separator = '---JSON_TRACE_START---';
+  const separatorIndex = text.indexOf(separator);
+  const contentToRender = separatorIndex !== -1 ? text.substring(0, separatorIndex).trim() : text;
+
+  const lines = contentToRender.split('\n'), elements: React.ReactNode[] = [];
   let listItems: string[] = [], tableHeaders: string[] = [], tableRows: string[][] = [];
   let inTable = false, inCodeBlock = false, codeBlockLines: string[] = [], codeBlockLang = '';
 

@@ -1,6 +1,6 @@
 import React from 'react';
 import { ChatSession } from '../types';
-import { MenuIcon, LogoIcon, TraceIcon } from './icons';
+import { MenuIcon, LogoIcon, TraceIcon } from '../icons';
 
 interface MobileHeaderProps {
   onToggleSidebar: () => void;

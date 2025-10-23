@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { User, UserProfileData } from '../types';
 import { createUserProfile } from '../services/firebaseService';
-import { LogoIcon } from './icons';
+import { LogoIcon } from '../icons';
 
 interface ProfileSetupScreenProps {
   user: User;

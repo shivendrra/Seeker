@@ -30,13 +30,13 @@ function App() {
   const [isLoading, setIsLoading] = useState(false);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [activeTrace, setActiveTrace] = useState<Trace | null>(null);
-  const [activeSources, setActiveSources] = useState<Source[] | null>(null);
+  const [sessionSources, setSessionSources] = useState<Source[]>([]);
   const [theme, setTheme] = useState<'light' | 'dark'>('light');
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [isTraceViewOpen, setIsTraceViewOpen] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
-  const hasTraceDetails = !!(activeTrace || activeSources);
+  const hasTraceDetails = !!(activeTrace || (sessionSources && sessionSources.length > 0));
 
   useEffect(() => {
     if (userProfile?.settings?.theme) {
@@ -69,15 +69,26 @@ function App() {
   }, [activeSessionId]);
   
   useEffect(() => {
-    // When messages update, find the last bot message to display its trace/sources
+    // Trace is only for the last bot message
     const lastBotMessage = [...messages].reverse().find(m => m.sender === 'bot');
-    if (lastBotMessage) {
-        setActiveTrace(lastBotMessage.trace || null);
-        setActiveSources(lastBotMessage.sources || null);
-    } else {
-        setActiveTrace(null);
-        setActiveSources(null);
-    }
+    setActiveTrace(lastBotMessage?.trace || null);
+
+    // Sources are accumulated for the whole session and de-duplicated
+    const allSources = messages.flatMap(msg => (msg.sender === 'bot' && msg.sources) ? msg.sources : []);
+    const uniqueSources = Array.from(new Map(allSources.map(source => [source.id, source])).values());
+    
+    // Sort sources by date, most recent first, if date is available
+    uniqueSources.sort((a, b) => {
+        try {
+            const dateA = new Date(a.date).getTime();
+            const dateB = new Date(b.date).getTime();
+            return dateB - dateA;
+        } catch (e) {
+            return 0; // Don't sort if dates are invalid
+        }
+    });
+
+    setSessionSources(uniqueSources);
   }, [messages]);
 
   const scrollToBottom = () => {
@@ -140,7 +151,7 @@ function App() {
 
     } catch (error) {
       console.error('Error streaming response:', error);
-      await updateMessageInSession(activeSessionId, botMessageRef.id, 'Sorry, I encountered an error.');
+      await updateMessageInSession(activeSessionId, botMessageRef.id, "I'm sorry, but the research could not be completed due to an error. Please try your query again.");
     } finally {
       setIsLoading(false);
     }
@@ -221,7 +232,7 @@ function App() {
 
         {/* Right TraceView (Static on XL+) */}
         <div className="hidden xl:flex xl:flex-shrink-0 w-80">
-          {(userProfile?.settings?.showTrace !== false) && <TraceView trace={activeTrace} sources={activeSources} onClose={() => setIsTraceViewOpen(false)} />}
+          {(userProfile?.settings?.showTrace !== false) && <TraceView trace={activeTrace} sources={sessionSources} onClose={() => setIsTraceViewOpen(false)} />}
         </div>
         
         {/* Right TraceView (Slide-out on < XL) */}
@@ -232,7 +243,7 @@ function App() {
             ${isTraceViewOpen ? 'translate-x-0' : 'translate-x-full'}
           `}
         >
-          {(userProfile?.settings?.showTrace !== false) && <TraceView trace={activeTrace} sources={activeSources} onClose={() => setIsTraceViewOpen(false)} />}
+          {(userProfile?.settings?.showTrace !== false) && <TraceView trace={activeTrace} sources={sessionSources} onClose={() => setIsTraceViewOpen(false)} />}
         </div>
         
         {/* Right TraceView Backdrop */}
